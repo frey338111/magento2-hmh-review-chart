@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+
+/** @var \Hmh\ReviewChart\Block\RatingChart $block */
+
+$aggregatedRatings = $block->getAggregatedRating();
+if (count($aggregatedRatings) < 3) {
+    return;
+}
+
+$ratingsJson = json_encode($aggregatedRatings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+?>
+<div class="block review-list" >
+    <div class="block-title">
+        <strong><?= $block->escapeHtml(__('What Customers Think')) ?></strong>
+    </div>
+</div>
+<div class="hmh-reviewchart-rating" data-role="hmh-reviewchart-rating"></div>
+<script type="text/x-magento-init">
+{
+    "[data-role=hmh-reviewchart-rating]": {
+        "hmhReviewChart": {
+            "ratings": <?= /* @noEscape */ $ratingsJson ?: '{}' ?>
+        }
+    }
+}
+</script>

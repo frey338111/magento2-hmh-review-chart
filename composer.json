@@ -1,0 +1,20 @@
+{
+    "name": "hmh/magento2-review-chart",
+    "description": "Review chart module.",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "magento/framework": "*",
+        "magento/module-review": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Hmh\\ReviewChart\\": ""
+        }
+    }
+}

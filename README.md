@@ -1,0 +1,75 @@
+# Hmh_ReviewChart
+
+Magento 2 module that adds a customer-facing radar chart to the product review section.
+
+## Overview
+
+This module reads selected Magento review rating codes from system configuration, calculates the average score for each configured rating, and renders a radar chart above the AJAX-loaded product review list.
+
+The chart is only rendered when:
+
+- `Hmh > Review Chart > Enable` is enabled
+- Magento review is enabled via `catalog/review/active`
+- at least 3 rating codes are configured
+- at least 3 averaged rating values are available for the current product
+
+## Requirements
+
+- PHP `>= 8.1`
+- `magento/module-review`
+
+## Installation
+
+Install the module in `app/code/Hmh/ReviewChart`, then run:
+
+```bash
+bin/magento module:enable Hmh_ReviewChart
+bin/magento setup:upgrade
+bin/magento cache:flush
+```
+
+If static assets are cached or deployed in production mode, also run:
+
+```bash
+bin/magento setup:static-content:deploy
+```
+
+## Configuration
+
+Admin path:
+
+`Stores > Configuration > HMH > Review Chart`
+
+Available settings:
+
+- `Enable`
+- `Rating Code`
+
+`Rating Code` is a multiselect of Magento review rating codes. These are used as the radar chart axes.
+
+## How It Works
+
+1. Set up review ratings in Magento at `Stores > Attributes > Rating`.
+2. Create the rating attributes you want customers to score, for example `Quality`, `Value`, or `Durability`.
+3. Go to `Stores > Configuration > HMH > Review Chart`.
+4. Enable the module.
+5. Select the rating codes you want to use in the radar chart.
+
+For best results, configure at least 3 rating attributes so the radar chart is meaningful.
+
+The module then:
+
+- loads the selected rating codes from system configuration
+- calculates the average score for each selected rating on the current product
+- converts each average to an integer score on a `1-5` scale
+- renders the radar chart above the product review list when enough data exists
+
+## Screenshots
+
+Configuration screen for enabling the module and selecting the rating codes used by the radar chart.
+
+![Review Chart Configuration](./img/configuration.png)
+
+Frontend radar chart rendered in the product review section.
+
+![Review Chart Example](./img/rating-chart.png)
