@@ -2,9 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="hmh" translate="label" sortOrder="900">
-            <label>HMH</label>
-        </tab>
         <section id="hmh_reviewchart" translate="label" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Review Chart</label>
             <tab>hmh</tab>
