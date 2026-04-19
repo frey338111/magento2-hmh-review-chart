@@ -66,10 +66,20 @@ The module then:
 
 ## Screenshots
 
-Configuration screen for enabling the module and selecting the rating codes used by the radar chart.
+### Admin Configuration
 
-![Review Chart Configuration](./img/configuration.png)
+Enable the module and choose the review rating attributes that should be included in the radar chart.
 
-Frontend radar chart rendered in the product review section.
+![Admin Configuration](./img/configuration.png)
 
-![Review Chart Example](./img/rating-chart.png)
+### Customer Rating Input
+
+Customers submit product reviews using the configured rating attributes.
+
+![Customer Rating Input](./img/rate-product.png)
+
+### Frontend Output
+
+Radar chart shown above the product review list using the selected review rating attributes.
+
+![Frontend Output](./img/rating-chart.png)
