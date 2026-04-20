@@ -1,184 +1,239 @@
 define([], function () {
     'use strict';
 
-    var MAX_VALUE = 5;
-    var WIDTH = 560;
-    var HEIGHT = 480;
-    var CENTER_X = 240;
-    var CENTER_Y = HEIGHT / 2;
-    var RADIUS = 136;
-    var LABEL_OFFSET = 28;
-    var AXIS_LABEL_FONT_SIZE = 19;
-    var SCALE_LABEL_FONT_SIZE = 16;
-    var POINT_RADIUS = 4;
+    const ratingChart = {
+        getOption: function (config, key) {
+            return Number(config[key]) || 0;
+        },
 
-    function toPoint(angle, radius) {
-        return {
-            x: CENTER_X + Math.cos(angle) * radius,
-            y: CENTER_Y + Math.sin(angle) * radius
-        };
-    }
+        getStringOption: function (config, key, fallback) {
+            return typeof config[key] === 'string' && config[key] !== '' ? config[key] : fallback;
+        },
 
-    function drawPolygon(ctx, points, strokeStyle, fillStyle, lineWidth) {
-        if (!points.length) {
-            return;
-        }
+        getOpacityOption: function (config, key, fallback) {
+            const value = Number(config[key]);
 
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
+            if (Number.isNaN(value) || value < 0 || value > 1) {
+                return fallback;
+            }
 
-        points.slice(1).forEach(function (point) {
-            ctx.lineTo(point.x, point.y);
-        });
+            return value;
+        },
 
-        ctx.closePath();
+        hexToRgba: function (hexColor, opacity) {
+            const normalized = hexColor.replace('#', '');
 
-        if (fillStyle) {
-            ctx.fillStyle = fillStyle;
-            ctx.fill();
-        }
+            if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
+                return hexColor;
+            }
 
-        if (strokeStyle) {
-            ctx.lineWidth = lineWidth;
-            ctx.strokeStyle = strokeStyle;
-            ctx.stroke();
-        }
-    }
+            const red = parseInt(normalized.slice(0, 2), 16);
+            const green = parseInt(normalized.slice(2, 4), 16);
+            const blue = parseInt(normalized.slice(4, 6), 16);
 
-    function drawGrid(ctx, totalAxes) {
-        var level;
+            return 'rgba(' + red + ', ' + green + ', ' + blue + ', ' + opacity + ')';
+        },
 
-        ctx.save();
-        ctx.strokeStyle = '#d1d5db';
-        ctx.lineWidth = 1;
+        getCenterY: function (config) {
+            return this.getOption(config, 'height') / 2;
+        },
 
-        for (level = 1; level <= MAX_VALUE; level += 1) {
-            drawPolygon(
+        toPoint: function (config, angle, radius) {
+            return {
+                x: this.getOption(config, 'centerX') + Math.cos(angle) * radius,
+                y: this.getCenterY(config) + Math.sin(angle) * radius
+            };
+        },
+
+        drawPolygon: function (ctx, points, strokeStyle, fillStyle, lineWidth) {
+            if (!points.length) {
+                return;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            points.slice(1).forEach(function (point) {
+                ctx.lineTo(point.x, point.y);
+            });
+
+            ctx.closePath();
+
+            if (fillStyle) {
+                ctx.fillStyle = fillStyle;
+                ctx.fill();
+            }
+
+            if (strokeStyle) {
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = strokeStyle;
+                ctx.stroke();
+            }
+        },
+
+        buildRegularPolygon: function (config, totalAxes, radius) {
+            const step = (Math.PI * 2) / totalAxes;
+            const startAngle = -Math.PI / 2;
+            const points = [];
+
+            for (let index = 0; index < totalAxes; index += 1) {
+                points.push(this.toPoint(config, startAngle + (step * index), radius));
+            }
+
+            return points;
+        },
+
+        drawGrid: function (ctx, chartConfig, totalAxes) {
+            const maxValue = this.getOption(chartConfig, 'maxValue');
+            const radius = this.getOption(chartConfig, 'radius');
+
+            ctx.save();
+            ctx.strokeStyle = '#d1d5db';
+            ctx.lineWidth = 1;
+
+            for (let level = 1; level <= maxValue; level += 1) {
+                this.drawPolygon(
+                    ctx,
+                    this.buildRegularPolygon(chartConfig, totalAxes, radius * (level / maxValue)),
+                    '#d1d5db',
+                    null,
+                    1.5
+                );
+            }
+
+            ctx.restore();
+        },
+
+        drawAxes: function (ctx, chartConfig, labels) {
+            const totalAxes = labels.length;
+            const step = (Math.PI * 2) / totalAxes;
+            const startAngle = -Math.PI / 2;
+            const centerX = this.getOption(chartConfig, 'centerX');
+            const centerY = this.getCenterY(chartConfig);
+            const radius = this.getOption(chartConfig, 'radius');
+            const labelOffset = this.getOption(chartConfig, 'labelOffset');
+            const axisLabelFontSize = this.getOption(chartConfig, 'axisLabelFontSize');
+
+            labels.forEach(function (label, index) {
+                const angle = startAngle + (step * index);
+                const endPoint = this.toPoint(chartConfig, angle, radius);
+                const labelPoint = this.toPoint(chartConfig, angle, radius + labelOffset);
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(endPoint.x, endPoint.y);
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = '#9ca3af';
+                ctx.stroke();
+
+                ctx.fillStyle = this.getStringOption(chartConfig, 'axisLabelColor', '#1f2937');
+                ctx.font = '600 ' + axisLabelFontSize + 'px Arial, sans-serif';
+                ctx.textAlign = labelPoint.x >= centerX + 8 ? 'left' : (labelPoint.x <= centerX - 8 ? 'right' : 'center');
+                ctx.textBaseline = labelPoint.y >= centerY + 8 ? 'top' : (labelPoint.y <= centerY - 8 ? 'bottom' : 'middle');
+                ctx.fillText(label, labelPoint.x, labelPoint.y);
+            }, this);
+        },
+
+        drawScaleLabels: function (ctx, chartConfig) {
+            const maxValue = this.getOption(chartConfig, 'maxValue');
+            const centerX = this.getOption(chartConfig, 'centerX');
+            const centerY = this.getCenterY(chartConfig);
+            const radius = this.getOption(chartConfig, 'radius');
+            const scaleLabelFontSize = this.getOption(chartConfig, 'scaleLabelFontSize');
+
+            ctx.save();
+            ctx.fillStyle = this.getStringOption(chartConfig, 'scaleLabelColor', '#6b7280');
+            ctx.font = scaleLabelFontSize + 'px Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for (let level = 1; level <= maxValue; level += 1) {
+                ctx.fillText(String(level), centerX, centerY - (radius * (level / maxValue)));
+            }
+
+            ctx.restore();
+        },
+
+        buildDataPoints: function (chartConfig, ratings, labels) {
+            const totalAxes = labels.length;
+            const step = (Math.PI * 2) / totalAxes;
+            const startAngle = -Math.PI / 2;
+            const maxValue = this.getOption(chartConfig, 'maxValue');
+            const radius = this.getOption(chartConfig, 'radius');
+
+            return labels.map(function (label, index) {
+                const value = Number(ratings[label]) || 0;
+                const normalizedValue = Math.max(0, Math.min(maxValue, value));
+                const pointRadius = radius * (normalizedValue / maxValue);
+
+                return this.toPoint(chartConfig, startAngle + (step * index), pointRadius);
+            }, this);
+        },
+
+        drawDataShape: function (ctx, chartConfig, ratings, labels) {
+            const points = this.buildDataPoints(chartConfig, ratings, labels);
+            const pointRadius = this.getOption(chartConfig, 'pointRadius');
+            const dataFillColor = this.getStringOption(chartConfig, 'dataFillColor', '#1d4ed8');
+            const dataFillOpacity = this.getOpacityOption(chartConfig, 'dataFillOpacity', 0.32);
+            const dataStrokeColor = this.getStringOption(chartConfig, 'dataStrokeColor', '#1d4ed8');
+            const dataPointColor = this.getStringOption(chartConfig, 'dataPointColor', '#1d4ed8');
+
+            this.drawPolygon(
                 ctx,
-                buildRegularPolygon(totalAxes, RADIUS * (level / MAX_VALUE)),
-                '#d1d5db',
-                null,
-                1.5
+                points,
+                dataStrokeColor,
+                this.hexToRgba(dataFillColor, dataFillOpacity),
+                3
             );
+
+            points.forEach(function (point) {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, pointRadius, 0, Math.PI * 2, false);
+                ctx.fillStyle = dataPointColor;
+                ctx.fill();
+            });
+        },
+
+        createCanvas: function (doc, chartConfig) {
+            const width = this.getOption(chartConfig, 'width');
+            const height = this.getOption(chartConfig, 'height');
+            const canvas = doc.createElement('canvas');
+
+            canvas.width = width;
+            canvas.height = height;
+            canvas.style.display = 'block';
+            canvas.style.width = '100%';
+            canvas.style.maxWidth = width + 'px';
+            canvas.style.height = 'auto';
+
+            return canvas;
+        },
+
+        render: function (config, element) {
+            const ratings = config.ratings || {};
+            const chartConfig = config.chartConfig || {};
+            const labels = Object.keys(ratings);
+            const doc = element.ownerDocument;
+
+            element.innerHTML = '';
+
+            if (!labels.length) {
+                return;
+            }
+
+            const canvas = this.createCanvas(doc, chartConfig);
+            const ctx = canvas.getContext('2d');
+
+            element.appendChild(canvas);
+
+            this.drawGrid(ctx, chartConfig, labels.length);
+            this.drawAxes(ctx, chartConfig, labels);
+            this.drawScaleLabels(ctx, chartConfig);
+            this.drawDataShape(ctx, chartConfig, ratings, labels);
         }
-
-        ctx.restore();
-    }
-
-    function buildRegularPolygon(totalAxes, radius) {
-        var step = (Math.PI * 2) / totalAxes;
-        var startAngle = -Math.PI / 2;
-        var points = [];
-        var index;
-
-        for (index = 0; index < totalAxes; index += 1) {
-            points.push(toPoint(startAngle + (step * index), radius));
-        }
-
-        return points;
-    }
-
-    function drawAxes(ctx, labels) {
-        var totalAxes = labels.length;
-        var step = (Math.PI * 2) / totalAxes;
-        var startAngle = -Math.PI / 2;
-
-        labels.forEach(function (label, index) {
-            var angle = startAngle + (step * index);
-            var endPoint = toPoint(angle, RADIUS);
-            var labelPoint = toPoint(angle, RADIUS + LABEL_OFFSET);
-
-            ctx.beginPath();
-            ctx.moveTo(CENTER_X, CENTER_Y);
-            ctx.lineTo(endPoint.x, endPoint.y);
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#9ca3af';
-            ctx.stroke();
-
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '600 ' + AXIS_LABEL_FONT_SIZE + 'px Arial, sans-serif';
-            ctx.textAlign = labelPoint.x >= CENTER_X + 8 ? 'left' : (labelPoint.x <= CENTER_X - 8 ? 'right' : 'center');
-            ctx.textBaseline = labelPoint.y >= CENTER_Y + 8 ? 'top' : (labelPoint.y <= CENTER_Y - 8 ? 'bottom' : 'middle');
-            ctx.fillText(label, labelPoint.x, labelPoint.y);
-        });
-    }
-
-    function drawScaleLabels(ctx) {
-        var level;
-
-        ctx.save();
-        ctx.fillStyle = '#6b7280';
-        ctx.font = SCALE_LABEL_FONT_SIZE + 'px Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        for (level = 1; level <= MAX_VALUE; level += 1) {
-            ctx.fillText(String(level), CENTER_X, CENTER_Y - (RADIUS * (level / MAX_VALUE)));
-        }
-
-        ctx.restore();
-    }
-
-    function buildDataPoints(ratings, labels) {
-        var totalAxes = labels.length;
-        var step = (Math.PI * 2) / totalAxes;
-        var startAngle = -Math.PI / 2;
-
-        return labels.map(function (label, index) {
-            var value = Number(ratings[label]) || 0;
-            var normalizedValue = Math.max(0, Math.min(MAX_VALUE, value));
-            var radius = RADIUS * (normalizedValue / MAX_VALUE);
-
-            return toPoint(startAngle + (step * index), radius);
-        });
-    }
-
-    function drawDataShape(ctx, ratings, labels) {
-        var points = buildDataPoints(ratings, labels);
-
-        drawPolygon(ctx, points, '#1d4ed8', 'rgba(29, 78, 216, 0.32)', 3);
-
-        points.forEach(function (point) {
-            ctx.beginPath();
-            ctx.arc(point.x, point.y, POINT_RADIUS, 0, Math.PI * 2, false);
-            ctx.fillStyle = '#1d4ed8';
-            ctx.fill();
-        });
-    }
-
-    function createCanvas(doc) {
-        var canvas = doc.createElement('canvas');
-
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
-        canvas.style.display = 'block';
-        canvas.style.width = '100%';
-        canvas.style.maxWidth = WIDTH + 'px';
-        canvas.style.height = 'auto';
-
-        return canvas;
-    }
+    };
 
     return function (config, element) {
-        var ratings = config.ratings || {};
-        var labels = Object.keys(ratings);
-        var doc = element.ownerDocument;
-        var canvas;
-        var ctx;
-
-        element.innerHTML = '';
-
-        if (!labels.length) {
-            return;
-        }
-
-        canvas = createCanvas(doc);
-        element.appendChild(canvas);
-        ctx = canvas.getContext('2d');
-
-        drawGrid(ctx, labels.length);
-        drawAxes(ctx, labels);
-        drawScaleLabels(ctx);
-        drawDataShape(ctx, ratings, labels);
+        ratingChart.render(config, element);
     };
 });

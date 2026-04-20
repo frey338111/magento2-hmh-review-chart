@@ -80,4 +80,12 @@ class RatingChart extends ProductView
 
         return $this->aggregatedRatings;
     }
+
+    /**
+     * @return array<string, int|string>
+     */
+    public function getChartConfig(): array
+    {
+        return $this->configProvider->getChartConfig();
+    }
 }

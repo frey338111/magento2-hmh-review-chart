@@ -6,6 +6,23 @@
             <general>
                 <enable>0</enable>
             </general>
+            <advanced>
+                <max_value>5</max_value>
+                <width>560</width>
+                <height>480</height>
+                <center_x>240</center_x>
+                <radius>136</radius>
+                <label_offset>28</label_offset>
+                <axis_label_font_size>19</axis_label_font_size>
+                <axis_label_color>#1f2937</axis_label_color>
+                <scale_label_font_size>16</scale_label_font_size>
+                <scale_label_color>#6b7280</scale_label_color>
+                <data_fill_color>#1d4ed8</data_fill_color>
+                <data_fill_opacity>0.32</data_fill_opacity>
+                <data_stroke_color>#1d4ed8</data_stroke_color>
+                <data_point_color>#1d4ed8</data_point_color>
+                <point_radius>4</point_radius>
+            </advanced>
         </hmh_reviewchart>
     </default>
 </config>

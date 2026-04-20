@@ -42,10 +42,34 @@ Admin path:
 
 Available settings:
 
-- `Enable`
-- `Rating Code`
+- `General > Enable`
+- `General > Rating Code`
+- `Advanced > Max Value`
+- `Advanced > Canvas Width`
+- `Advanced > Canvas Height`
+- `Advanced > Center X`
+- `Advanced > Radius`
+- `Advanced > Label Offset`
+- `Advanced > Axis Label Font Size`
+- `Advanced > Axis Label Color`
+- `Advanced > Scale Label Font Size`
+- `Advanced > Scale Label Color`
+- `Advanced > Data Fill Color`
+- `Advanced > Data Fill Opacity`
+- `Advanced > Data Stroke Color`
+- `Advanced > Data Point Color`
+- `Advanced > Point Radius`
 
 `Rating Code` is a multiselect of Magento review rating codes. These are used as the radar chart axes.
+
+The `Advanced` group controls the chart presentation:
+
+- size and positioning of the canvas and radar shape
+- font sizing for axis and scale labels
+- label, fill, stroke, and point colors
+- radar fill opacity
+
+Color fields use a color picker in admin. `Data Fill Opacity` accepts a decimal value between `0` and `1`.
 
 ## How It Works
 
@@ -54,6 +78,7 @@ Available settings:
 3. Go to `Stores > Configuration > HMH > Review Chart`.
 4. Enable the module.
 5. Select the rating codes you want to use in the radar chart.
+6. Optionally adjust the `Advanced` style settings to match your storefront design.
 
 For best results, configure at least 3 rating attributes so the radar chart is meaningful.
 

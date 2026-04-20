@@ -21,6 +21,76 @@
                     </depends>
                 </field>
             </group>
+            <group id="advanced" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced</label>
+                <comment><![CDATA[Config the color and style of radar chart]]></comment>
+                <field id="max_value" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Value</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="width" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Canvas Width</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="height" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Canvas Height</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="center_x" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Center X</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="radius" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Radius</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="label_offset" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Label Offset</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="axis_label_font_size" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Axis Label Font Size</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="axis_label_color" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Axis Label Color</label>
+                    <comment><![CDATA[Pick the color for axis labels]]></comment>
+                    <frontend_model>Hmh\ReviewChart\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                </field>
+                <field id="scale_label_font_size" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Scale Label Font Size</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="scale_label_color" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Scale Label Color</label>
+                    <comment><![CDATA[Pick the color for scale labels]]></comment>
+                    <frontend_model>Hmh\ReviewChart\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                </field>
+                <field id="data_fill_color" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Data Fill Color</label>
+                    <comment><![CDATA[Pick the fill color for the radar area]]></comment>
+                    <frontend_model>Hmh\ReviewChart\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                </field>
+                <field id="data_fill_opacity" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Data Fill Opacity</label>
+                    <comment><![CDATA[Decimal opacity between 0 and 1, for example 0.32]]></comment>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                </field>
+                <field id="data_stroke_color" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Data Stroke Color</label>
+                    <comment><![CDATA[Pick the outline color for the radar area]]></comment>
+                    <frontend_model>Hmh\ReviewChart\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                </field>
+                <field id="data_point_color" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Data Point Color</label>
+                    <comment><![CDATA[Pick the color for the radar points]]></comment>
+                    <frontend_model>Hmh\ReviewChart\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                </field>
+                <field id="point_radius" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Point Radius</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+            </group>
         </section>
     </system>
 </config>
