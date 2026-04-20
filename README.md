@@ -97,6 +97,12 @@ Enable the module and choose the review rating attributes that should be include
 
 ![Admin Configuration](./img/configuration.png)
 
+### Advanced Style Settings
+
+Adjust the radar chart dimensions, typography, fill opacity, and color-picked style options from the `Advanced` configuration group.
+
+![Advanced Style Settings](./img/advanced-setting.png)
+
 ### Customer Rating Input
 
 Customers submit product reviews using the configured rating attributes.
