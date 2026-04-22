@@ -6,6 +6,8 @@ Magento 2 module that adds a customer-facing radar chart to the product review s
 
 This module reads selected Magento review rating codes from system configuration, calculates the average score for each configured rating, and renders a radar chart above the AJAX-loaded product review list.
 
+The module supports both Luma and Hyva storefronts in the same package.
+
 The chart is only rendered when:
 
 - `Hmh > Review Chart > Enable` is enabled
@@ -88,6 +90,19 @@ The module then:
 - calculates the average score for each selected rating on the current product
 - converts each average to an integer score on a `1-5` scale
 - renders the radar chart above the product review list when enough data exists
+
+## Theme Support
+
+The module now ships both storefront variants in one codebase:
+
+- `view/frontend/templates/luma/*` and `view/frontend/web/js/luma/*` for the default Magento storefront
+- `view/frontend/templates/hyva/*` and `view/frontend/web/js/hyva/*` for Hyva
+
+Magento loads the default frontend assets for Luma.
+
+Hyva-specific overrides are loaded through the Hyva-prefixed layout handle:
+
+- `hyva_catalog_product_view.xml`
 
 ## Screenshots
 

@@ -3,6 +3,7 @@
     <module name="Hmh_ReviewChart">
         <sequence>
             <module name="Hmh_Core"/>
+            <module name="Hyva_Theme"/>
             <module name="Magento_Review"/>
         </sequence>
     </module>

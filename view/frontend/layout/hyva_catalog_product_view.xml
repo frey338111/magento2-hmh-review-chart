@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="review_list">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">
+                    Hmh_ReviewChart::hyva/product/view/list.phtml
+                </argument>
+            </action>
+            <block class="Hmh\ReviewChart\Block\RatingChart"
+                   as="hmh.review.rating.chart"
+                   name="hmh.review.rating.chart"
+                   template="Hmh_ReviewChart::hyva/rating-chart.phtml"/>
+        </referenceBlock>
+    </body>
+</page>

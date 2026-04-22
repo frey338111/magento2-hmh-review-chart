@@ -1,7 +1,7 @@
 var config = {
     map: {
         '*': {
-            hmhReviewChart: 'Hmh_ReviewChart/js/rating-chart'
+            hmhReviewChart: 'Hmh_ReviewChart/js/luma/rating-chart'
         }
     }
 };

@@ -5,6 +5,6 @@
         <block class="Hmh\ReviewChart\Block\RatingChart"
                name="hmh.review.rating.chart"
                before="product.info.product_additional_data"
-               template="Hmh_ReviewChart::rating-chart.phtml"/>
+               template="Hmh_ReviewChart::luma/rating-chart.phtml"/>
     </referenceContainer>
 </layout>

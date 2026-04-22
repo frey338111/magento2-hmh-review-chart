@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+/** @var \Hmh\ReviewChart\Block\RatingChart $block */
+
+$aggregatedRatings = $block->getAggregatedRating();
+if (count($aggregatedRatings) < 3) {
+    return;
+}
+
+$ratingsJson = json_encode($aggregatedRatings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+$chartConfigJson = json_encode($block->getChartConfig(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+?>
+<script src="<?= $block->escapeUrl($block->getViewFileUrl('Hmh_ReviewChart::js/hyva/rating-chart.js')) ?>" defer></script>
+<section
+    x-data="{ loading: true }"
+    x-init="$nextTick(() => { try { window.renderHmhReviewChart($refs.chart); } finally { loading = false } })"
+    class="my-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+>
+    <header class="mb-4 pl-2">
+        <div class="text-xl my-3">
+            <?= $block->escapeHtml(__('Customer Rating Overview')) ?>
+        </div>
+        <p x-show="loading" class="mt-2 text-sm font-medium text-slate-600">
+            <?= $block->escapeHtml(__('Loading chart...')) ?>
+        </p>
+    </header>
+    <div
+        x-ref="chart"
+        class="hmh-reviewchart-rating relative overflow-x-auto"
+        data-role="hmh-reviewchart-rating"
+        data-ratings='<?= /* @noEscape */ $ratingsJson ?: '{}' ?>'
+        data-chart-config='<?= /* @noEscape */ $chartConfigJson ?: '{}' ?>'
+    >
+        <div
+            x-show="loading"
+            class="flex min-h-[320px] items-center justify-center rounded-lg bg-slate-50 text-slate-600"
+        >
+            <div class="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-slate-700"></div>
+        </div>
+    </div>
+</section>

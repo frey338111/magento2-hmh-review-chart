@@ -4,10 +4,18 @@
     "type": "magento2-module",
     "version": "1.0.0",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Fei Chen",
+            "email": "feic.hmh@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=8.1",
         "magento/framework": "*",
-        "magento/module-review": "*"
+        "magento/module-review": "*",
+        "hyva-themes/magento2-theme-module": "*",
+        "hyva-themes/magento2-compat-module-fallback": "*"
     },
     "autoload": {
         "files": [
